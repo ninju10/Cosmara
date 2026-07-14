@@ -112,7 +112,11 @@ pipeline {
 
         stage('Push to Registry') {
             when {
-                branch 'main'  // Only push on main branch
+                anyOf {
+                    branch 'main'                                    // works in Multibranch Pipeline jobs
+                    expression { env.GIT_BRANCH == 'origin/main' }    // works in plain Pipeline jobs
+                    expression { env.GIT_BRANCH == 'main' }
+                }
             }
             steps {
                 script {
@@ -136,7 +140,11 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'main'
+                anyOf {
+                    branch 'main'
+                    expression { env.GIT_BRANCH == 'origin/main' }
+                    expression { env.GIT_BRANCH == 'main' }
+                }
             }
             steps {
                 script {
