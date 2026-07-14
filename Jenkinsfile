@@ -157,14 +157,14 @@ pipeline {
                         # Run new container
                         docker run -d \
                             --name cosmara-app \
-                            -p 80:80 \
+                            -p 8496:80 \
                             --restart unless-stopped \
                             ${DOCKER_REPO}:${IMAGE_TAG}
 
                         sleep 2
 
                         # Verify deployment
-                        curl -f http://localhost/ > /dev/null || exit 1
+                        curl -f http://localhost:8496/ > /dev/null || exit 1
                         echo "Application deployed successfully"
                         docker ps | grep cosmara-app
                     '''
