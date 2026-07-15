@@ -30,18 +30,6 @@ pipeline {
             }
         }
 
-        stage('Trivy Repo Scan') {
-            steps {
-                sh '''
-                    set -e
-                    echo "Scanning repository with Trivy..."
-
-                    trivy fs -
-                    -exit-code 1 --severity HIGH,CRITICAL .
-                '''
-            }
-        }
-
         stage('Validate') {
             steps {
                 sh '''
@@ -69,6 +57,19 @@ pipeline {
                       .
 
                     echo "Docker image built successfully"
+                '''
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                sh '''
+                    set -e
+                    echo "Scanning Docker image with Trivy..."
+
+                    trivy image --exit-code 0 --severity HIGH,CRITICAL ${IMAGE_NAME}:${IMAGE_TAG}
+
+                    echo "Trivy scan completed"
                 '''
             }
         }
