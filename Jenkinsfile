@@ -30,6 +30,18 @@ pipeline {
             }
         }
 
+        stage('Trivy Repo Scan') {
+            steps {
+                sh '''
+                    set -e
+                    echo "Scanning repository with Trivy..."
+
+                    trivy fs -
+                    -exit-code 1 --severity HIGH,CRITICAL .
+                '''
+            }
+        }
+
         stage('Validate') {
             steps {
                 sh '''
